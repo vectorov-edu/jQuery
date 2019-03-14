@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Homework 3</title>
+  <style>
+
+    div.canvas {
+      width: 600px;
+      height: 300px;
+      border: 1px solid black;
+    }
+
+    div.ball {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      float: left;
+    }
+
+    .red {
+      background-color: red;
+    }
+
+    .green {
+      background-color: green;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    jQuery(function($) {
+      const canvas = $('div.canvas');
+
+      const ballString = '<div class="ball" />';
+
+      let time = null;
+      let removedBalls = 0;
+
+      $('input[type="button"]').click(
+        function(event) {
+          startNewGame();
+          addBall();
+        }
+      );
+
+      function addBall() {
+        const colorClass = Math.ceil(2 * Math.random()) - 1  === 0 ? 'green' : 'red';
+        const ball = $(ballString).addClass(colorClass).click(clickBallHandler);
+
+        canvas.append(ball);
+      }
+
+      function clickBallHandler(e) {
+        const currentBall = $(this);
+
+        if (currentBall.hasClass('red')) {
+          addBall();
+          addBall();
+
+          return;
+        }
+
+        if (currentBall.hasClass('green')) {
+          currentBall.remove();
+          removedBalls++;
+
+          if ($('.green').length === 0) {
+            $('.red').removeClass('red').addClass('green');
+          }
+        }
+
+        if ($('div.ball').length === 0) {
+          stopGame();
+        }
+      }
+
+      function startNewGame() {
+        if (time) {
+          return;
+        }
+
+        time = new Date();
+
+        canvas.empty();
+      }
+
+      function stopGame() {
+        time = (new Date() - time) / 1000;
+
+        showResultMessage();
+
+        time = null;
+      }
+
+      function showResultMessage() {
+        canvas.append(`<h2>Congratulation !!! You delete ${removedBalls} balls for ${time} seconds</h2>`);
+      }
+    })
+  </script>
+</head>
+<body>
+  <div class="canvas" >
+  </div>
+  <input type="button" value="add ball">
+</body>
+</html>
